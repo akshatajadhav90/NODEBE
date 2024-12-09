@@ -2,10 +2,10 @@ const mysql = require("mysql2/promise");
 
 const config = {
     user: "root",
-    password: "Sampada@05",
+    password: "root",
     host: "127.0.0.1",
     port: "3306",
-    database: "crud",
+    database: "users",
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
