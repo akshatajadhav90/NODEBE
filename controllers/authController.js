@@ -4,20 +4,20 @@ const { pool } = require("../config/database");
 require("dotenv").config();
 
 // Mock Database (replace with a real database)
-const users = [];
+const signup = [];
 
 //............mock data............
 // exports.signup = async (req, res) => {
 //   const { username, password } = req.body;
 
-//   const existingUser = users?.find((ele) => ele["user_name"] === username);
+//   const existingUser = signup?.find((ele) => ele["username"] === username);
 //   if (existingUser) {
 //     return res.status(400).json({ message: "User already exists" });
 //   }
 
 //   try {
 //     const hashedPassword = await bcrypt.hash(password, 10);
-//     users.push({ id: Date.now(), user_name: username, password: hashedPassword });
+//     signup.push({ id: Date.now(), username: username, password: hashedPassword });
 //     res.status(201).json({ message: "User registered successfully" })
 //   }
 //   catch (e) {
@@ -31,10 +31,10 @@ const users = [];
 // exports.login = async (req, res) => {
 //   const { username, password } = req.body;
 
-//   console.log(username, users)
+//   console.log(username, signup)
 
 //   try {
-//     const isUserExists = users.find((ele) => ele["user_name"] === username);
+//     const isUserExists = signup.find((ele) => ele["username"] === username);
 //     console.log(isUserExists)
 //     if (!isUserExists) {
 //       return res.status(404).json({ message: "User not found" });
@@ -65,19 +65,19 @@ const users = [];
 
 
 exports.signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
 
-  const query = "Select * from signup where user_name=?";
+  const query = "Select * from signup where email=?";
 
   try {
-    const [value] = await pool.query(query, username);
+    const [value] = await pool.query(query, email);
     const existingUser = value?.find(
-      (userDetails) => userDetails["user_name"] === username
+      (userDetails) => userDetails["email"] === email
     );
 
     if (existingUser) {
       return res.status(400).json({
-        message: "User already exists",
+        message: "User with email already exists",
       });
     }
   } catch (e) {
@@ -87,34 +87,33 @@ exports.signup = async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const queryForInsert = "Insert INTO signup (user_name,password) Values (?,?)";
+  const queryForInsert = "Insert INTO signup (username, email, password) Values (?,?,?)";
   try {
-    const values = await pool.query(queryForInsert, [username, hashedPassword]);
+    const values = await pool.query(queryForInsert, [username, email, hashedPassword]);
 
     return res.status(201).json({ message: "User registered successfully" });
   } catch (e) {
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: e});
   }
 };
 
 
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+    console.log("-------------------------")
+  const { email, password } = req.body;
 
-  const query = "Select * from  signup where user_name=?";
+  const query = "Select * from  signup where email=?";
 
   try {
-    const [values] = await pool.query(query, [username]);
+    const [values] = await pool.query(query, [email]);
 
-
-
-    const isUserExists = values?.find((ele) => ele.user_name === username);
+    const isUserExists = values?.find((ele) => ele.email === email);
     if (!isUserExists) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "email not found" });
     }
 
-
+    console.log("isUserExists----------",isUserExists)
 
     const passwordMatched = await bcrypt.compare(
       password,
@@ -127,15 +126,16 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: isUserExists.id, username: isUserExists.user_name },
+      { id: isUserExists.id, email: isUserExists.email },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
 
+    console.log("token----------------",token)
     return res.status(200).json({ message: "Login Successfully", token });
   } catch (e) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: e });
   }
 };

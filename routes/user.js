@@ -8,9 +8,9 @@ router.post("/addUsers", authMiddleWre, add);
 
 router.get("/getUsers", authMiddleWre, getUsers);
 
-router.post("/updateUsers", authMiddleWre, updateUsers);
+router.put("/updateUsers/:id", authMiddleWre, updateUsers);
 
-router.delete("/deletUsers", authMiddleWre, deletUsers)
+router.delete("/deletUsers/:id", authMiddleWre, deletUsers)
 
 router.post("/searchUser", authMiddleWre, searchUsers)
 
