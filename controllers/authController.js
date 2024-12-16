@@ -65,7 +65,7 @@ const users = [];
 
 
 exports.signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
 
   const query = "Select * from signup where user_name=?";
 
@@ -87,9 +87,9 @@ exports.signup = async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const queryForInsert = "Insert INTO signup (user_name,password) Values (?,?)";
+  const queryForInsert = "Insert INTO signup (user_name,password,email) Values (?,?,?)";
   try {
-    const values = await pool.query(queryForInsert, [username, hashedPassword]);
+    const values = await pool.query(queryForInsert, [username, hashedPassword, email]);
 
     return res.status(201).json({ message: "User registered successfully" });
   } catch (e) {
@@ -100,16 +100,14 @@ exports.signup = async (req, res) => {
 
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  const query = "Select * from  signup where user_name=?";
+  const query = "Select * from  signup where email=?";
 
   try {
-    const [values] = await pool.query(query, [username]);
+    const [values] = await pool.query(query, [email]);
 
-
-
-    const isUserExists = values?.find((ele) => ele.user_name === username);
+    const isUserExists = values?.find((ele) => ele.email === email);
     if (!isUserExists) {
       return res.status(404).json({ message: "User not found" });
     }
