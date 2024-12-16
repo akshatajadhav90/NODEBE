@@ -12,8 +12,8 @@ router.put("/updateUsers/:id", authMiddleWre, updateUsers);
 
 router.delete("/deletUsers/:id", authMiddleWre, deletUsers)
 
-router.post("/searchUser", authMiddleWre, searchUsers)
+// router.post("/searchUser", authMiddleWre, searchUsers)
 
-router.post("/sorting",authMiddleWre,sorting)
+// router.post("/sorting",authMiddleWre,sorting)
 
 module.exports = router;

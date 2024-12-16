@@ -3,67 +3,6 @@ const jwt = require("jsonwebtoken");
 const { pool } = require("../config/database");
 require("dotenv").config();
 
-// Mock Database (replace with a real database)
-const signup = [];
-
-//............mock data............
-// exports.signup = async (req, res) => {
-//   const { username, password } = req.body;
-
-//   const existingUser = signup?.find((ele) => ele["username"] === username);
-//   if (existingUser) {
-//     return res.status(400).json({ message: "User already exists" });
-//   }
-
-//   try {
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     signup.push({ id: Date.now(), username: username, password: hashedPassword });
-//     res.status(201).json({ message: "User registered successfully" })
-//   }
-//   catch (e) {
-//     res.status(400).json({ message: "server error" })
-//   }
-// };
-
-
-
-// ............mock data............
-// exports.login = async (req, res) => {
-//   const { username, password } = req.body;
-
-//   console.log(username, signup)
-
-//   try {
-//     const isUserExists = signup.find((ele) => ele["username"] === username);
-//     console.log(isUserExists)
-//     if (!isUserExists) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     const passwordMatched = await bcrypt.compare(password, isUserExists.password);
-
-//     if (!passwordMatched) {
-//       return res.status(400).json({ message: "Incorrect password" })
-//     }
-
-//     const token = jwt.sign(
-//       { id: isUserExists.id, username: isUserExists.name },
-//       process.env.JWT_SECRET,
-//       {
-//         expiresIn: "1h",
-//       }
-//     );
-//     return res.status(200).json({ message: "Login Successfully", token })
-
-
-//   } catch (e) {
-//     return res.status(400).json({ message: "Server Error" })
-//   }
-// };
-
-
-
-
 exports.signup = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -74,6 +13,7 @@ exports.signup = async (req, res) => {
     const existingUser = value?.find(
       (userDetails) => userDetails["email"] === email
     );
+    
 
     if (existingUser) {
       return res.status(400).json({
@@ -129,7 +69,7 @@ exports.login = async (req, res) => {
       { id: isUserExists.id, email: isUserExists.email },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "9h",
       }
     );
 
