@@ -55,9 +55,18 @@ exports.getUsers = async (req, res) => {
     const [value] = await pool.query(query, params);
 
     // Fetch total count for pagination metadata
-    const [countResult] = await pool.query(
+    let [countResult] = []
+    if(!search)
+    {
+      [countResult] = await pool.query(
       "SELECT COUNT(*) as total FROM users"
     );
+  }
+  else{
+     [countResult] = await pool.query(
+      `SELECT COUNT(*) as total FROM users where CONCAT_WS(' ', name, profession, age, gender) LIKE ? `, [`%${search}%`]
+     )
+  }
     const total = countResult[0].total;
 
     return res.status(200).json({
