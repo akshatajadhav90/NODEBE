@@ -17,7 +17,13 @@ exports.add = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const { search, sortBy = "createdAt", sortOrder = "DESC", page = 1, limit = 10 } = req.query;
+    const {
+      search,
+      sortBy = "createdAt",
+      sortOrder = "DESC",
+      page = 1,
+      limit = 100,
+    } = req.query;
 
     let query = "SELECT * FROM users";
     const params = [];
@@ -29,7 +35,13 @@ exports.getUsers = async (req, res) => {
     }
 
     // Apply sorting
-    const validSortColumns = ["name", "profession", "age", "gender", "createdAt"];
+    const validSortColumns = [
+      "name",
+      "profession",
+      "age",
+      "gender",
+      "createdAt",
+    ];
     if (validSortColumns.includes(sortBy)) {
       query += ` ORDER BY ${sortBy} ${sortOrder === "DESC" ? "DESC" : "ASC"}`;
     }
@@ -43,12 +55,15 @@ exports.getUsers = async (req, res) => {
     const [value] = await pool.query(query, params);
 
     // Fetch total count for pagination metadata
-    const [countResult] = await pool.query("SELECT COUNT(*) as total FROM users");
+    const [countResult] = await pool.query(
+      "SELECT COUNT(*) as total FROM users"
+    );
     const total = countResult[0].total;
 
     return res.status(200).json({
       message: "Users fetched successfully",
-      users: value
+      totalUsers : total,
+      users: value,
     });
   } catch (e) {
     console.error(e);
@@ -93,11 +108,9 @@ exports.deletUsers = async (req, res) => {
     const query = "select * from users where id=?";
     const [isUserExists] = await pool.query(query, [id]);
     if (!isUserExists.length) {
-      return res
-        .status(400)
-        .json({
-          message: "User Cannot be delete because user id does not exist",
-        });
+      return res.status(400).json({
+        message: "User Cannot be delete because user id does not exist",
+      });
     }
 
     const deleteQuery = "delete from users where id=?";
