@@ -109,7 +109,7 @@ exports.updateUsers = async (req, res) => {
   }
 };
 
-exports.deletUsers = async (req, res) => {
+exports.deleteUsers = async (req, res) => {
   const { id } = req?.params;
 
   try {
@@ -132,41 +132,3 @@ exports.deletUsers = async (req, res) => {
   }
 };
 
-// exports.searchUsers = async (req, res) => {
-//     const { name } = req.body
-//     const query = "Select * from users";
-
-//     try {
-//         const [value] = await pool.query(query);
-
-//         const val = value.filter((ele) => ele.name.includes(name));
-//         console.log(val, name)
-//         res.status(200).json({ message: "Search Result", val })
-//     }
-//     catch (e) {
-//         res.status(400).json({ message: "Server Error" })
-//     }
-// }
-
-// exports.sorting = async (req, res) => {
-//     const { type } = req.body;
-
-//     const query = "Select * from users"
-//     try {
-//         const [sortValue] = await pool.query(query);
-//         console.log(sortValue?.sort((a, b) => b.name - a.name))
-//         if (typeof (type) === String) {
-
-//             return res.status(200).json({ messagxe: "Data sorted Successfully", response: sortValue?.sort((a, b) => a[type].localeCompare(b[type])) })
-//         }
-//         else {
-//             return res.status(200).json({ messagxe: "Data sorted Successfully", response: sortValue?.sort((a, b) => a[type] - b[type])
-//         })
-
-//     }
-//     }
-//     catch (e) {
-//     res.status(400).json({ message: "Server Error" })
-// }
-
-// }

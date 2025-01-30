@@ -1,5 +1,5 @@
 const express = require("express");
-const { add, getUsers, updateUsers, deletUsers, searchUsers, sorting } = require("../controllers/usersControllers");
+const { add, getUsers, updateUsers, deleteUsers, searchUsers, sorting } = require("../controllers/usersControllers");
 const { authMiddleWre } = require("../middlewares/middlewares");
 const { route } = require("./auth");
 const router = express.Router();
@@ -10,7 +10,7 @@ router.get("/getUsers", authMiddleWre, getUsers);
 
 router.put("/updateUsers/:id", authMiddleWre, updateUsers);
 
-router.delete("/deletUsers/:id", authMiddleWre, deletUsers)
+router.delete("/deleteUsers/:id", authMiddleWre, deleteUsers)
 
 // router.post("/searchUser", authMiddleWre, searchUsers)
 
