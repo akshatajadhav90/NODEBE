@@ -20,7 +20,7 @@ exports.getUsers = async (req, res) => {
     const {
       search,
       sortBy = "createdAt",
-      sortOrder = "DESC",
+      sortOrder = "desc",
       page = 1,
       limit = 100,
     } = req.query;
@@ -43,35 +43,34 @@ exports.getUsers = async (req, res) => {
       "createdAt",
     ];
     if (validSortColumns.includes(sortBy)) {
-      query += ` ORDER BY ${sortBy} ${sortOrder === "DESC" ? "DESC" : "ASC"}`;
+      query += ` ORDER BY ${sortBy} ${sortOrder === "desc" ? "desc" : "asc"}`;
     }
 
     // Apply pagination
     const offset = (page - 1) * limit;
-    query += " LIMIT ? OFFSET ?";
-    params.push(parseInt(limit), offset);
+    if (!search || !sortBy==="createdAt" || !sortOrder==="asc") {
+      query += " LIMIT ? OFFSET ?";
+      params.push(parseInt(limit), offset);
+    }
 
     // Execute the query
     const [value] = await pool.query(query, params);
 
     // Fetch total count for pagination metadata
-    let [countResult] = []
-    if(!search)
-    {
+    let [countResult] = [];
+    if (!search) {
+      [countResult] = await pool.query("SELECT COUNT(*) as total FROM users");
+    } else {
       [countResult] = await pool.query(
-      "SELECT COUNT(*) as total FROM users"
-    );
-  }
-  else{
-     [countResult] = await pool.query(
-      `SELECT COUNT(*) as total FROM users where CONCAT_WS(' ', name, profession, age, gender) LIKE ? `, [`%${search}%`]
-     )
-  }
+        `SELECT COUNT(*) as total FROM users where CONCAT_WS(' ', name, profession, age, gender) LIKE ? `,
+        [`%${search}%`]
+      );
+    }
     const total = countResult[0].total;
 
     return res.status(200).json({
       message: "Users fetched successfully",
-      totalUsers : total,
+      totalUsers: total,
       users: value,
     });
   } catch (e) {
