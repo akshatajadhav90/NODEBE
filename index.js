@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const { pool } = require("./config/database");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user")
+require("dotenv").config();
+
 
 const app = express()
 
@@ -23,6 +25,6 @@ app.use("/api/users", userRoutes);
         }
     })()
 
-app.listen(4008, () => {
-    console.log("Server running at 4008")
+app.listen(process.env.PORT, () => {
+    console.log(`Server running at ${process.env.PORT}`)
 })

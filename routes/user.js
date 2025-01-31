@@ -4,6 +4,7 @@ const { authMiddleWre } = require("../middlewares/middlewares");
 const { route } = require("./auth");
 const router = express.Router();
 
+
 router.post("/addUsers", authMiddleWre, add);
 
 router.get("/getUsers", authMiddleWre, getUsers);
