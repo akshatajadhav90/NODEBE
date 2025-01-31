@@ -1,18 +1,9 @@
 const mysql = require("mysql2/promise");
+require("dotenv").config();
 
-const config = {
-    user: "root",
-    password: "root",
-    host: "127.0.0.1",
-    port: "3306",
-    database: "users",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-};
-const pool = mysql.createPool(config);
+const mysql_url = `mysql://root:dXcnYTotpIHdqWipEhdRrRNiYGyrgJak@mysql.railway.internal:3306/railway`
 
-
+const pool = mysql.createPool(mysql_url);
 
 module.exports = {
     pool,
